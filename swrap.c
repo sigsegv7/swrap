@@ -41,6 +41,8 @@
 /* MUST BE A POWER OF TWO */
 #define SECTOR_SIZE 512
 
+#define ALIGN_UP(value, align) (((value) + (align)-1) & ~((align)-1))
+
 static const char *input_dir = NULL;
 static const char *output_file = NULL;
 static uint64_t total_bytes = 0;
@@ -159,6 +161,7 @@ wrap(void)
     }
 
     /* Write the total size */
+    total_bytes = ALIGN_UP(total_bytes, SECTOR_SIZE);
     lseek(outfd, 0, SEEK_SET);
     write(outfd, &total_bytes, sizeof(total_bytes));
     close(outfd);
